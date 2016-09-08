@@ -1,14 +1,15 @@
 package it.lic
 
-import it.lic.keypair.InMemoryStorage
 import it.lic.keypair.LicenseKeyPair
 /**
  * Test suite for KeyPair functionality.
  */
 public class LicenseTest extends spock.lang.Specification {
-  def "can build license"() {
+  def "can build a license"() {
     setup:
-    def storage = new InMemoryStorage();
+    def tmp = File.createTempDir()
+    tmp.deleteOnExit()
+    def storage = new FileStorage(tmp);
     def keypair = new LicenseKeyPair.Default(storage, "abc")
     def license = new License.Default(
       "server1.example.org",
@@ -22,9 +23,11 @@ public class LicenseTest extends spock.lang.Specification {
     license.encode() != null
   }
 
-  def "can store and retrieve license"() {
+  def "can store and retrieve a license"() {
     setup:
-    def storage = new InMemoryStorage();
+    def tmp = File.createTempDir()
+    tmp.deleteOnExit()
+    def storage = new FileStorage(tmp);
     def keypair = new LicenseKeyPair.Default(storage, "abc")
     def license = new License.Default(
       "server1.example.org",
