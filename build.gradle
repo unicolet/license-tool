@@ -1,14 +1,29 @@
 apply plugin: 'java'
+apply plugin: "groovy"
 
 repositories {
     jcenter()
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main']
+        }
+    }
+    test {
+        groovy {
+            srcDirs = ['src/test']
+        }
+    }
+}
+
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.5'
     compile 'io.jsonwebtoken:jjwt:0.6.0'
 
-    testCompile "junit:junit:4.11"
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.springframework:spring-test:4.1.6.RELEASE'
 }
 
