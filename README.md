@@ -1,2 +1,4 @@
 # license-tool
-A JWT-based license tool
+A JWT-based license tool.
+
+WIP
