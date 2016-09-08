@@ -58,7 +58,7 @@ public interface LicenseKeyPair {
                 keypair.getPublic().getEncoded()
             );
             this.storage.write(
-                String.format("%s/pk", this.name),
+                String.format("%s.pk", this.name),
                 keypair.getPrivate().getEncoded()
             );
         }
@@ -66,7 +66,7 @@ public interface LicenseKeyPair {
         @Override
         public void sign(final JwtBuilder jwt) throws Exception {
             final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(
-                this.storage.read(String.format("%s/pk", this.name))
+                this.storage.read(String.format("%s.pk", this.name))
             );
             final KeyFactory kf = KeyFactory.getInstance("RSA");
             jwt.signWith(SignatureAlgorithm.RS512, kf.generatePrivate(spec));
