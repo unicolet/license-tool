@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    compile 'io.jsonwebtoken:jjwt:0.6.0'
+
+    testCompile "junit:junit:4.11"
+}
+
