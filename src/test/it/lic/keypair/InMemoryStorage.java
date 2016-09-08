@@ -1,5 +1,6 @@
 package it.lic.keypair;
 
+import it.lic.Storage;
 import java.util.HashMap;
 import java.util.Map;
 

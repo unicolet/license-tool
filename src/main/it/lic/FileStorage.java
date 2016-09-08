@@ -1,4 +1,4 @@
-package it.lic.keypair;
+package it.lic;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -1,15 +1,15 @@
 package it.lic
-
-import it.lic.keypair.FileStorage
 /**
  * Test suite for FileStorage functionality.
  */
 public class FileStorageTest extends spock.lang.Specification {
     def "can work from a tmp directory"() {
-      expect:
+      setup:
       def tmp = File.createTempDir()
       tmp.deleteOnExit()
       def storage = new FileStorage(tmp)
+
+      expect:
       storage.exists(key) == exists
 
       where:
@@ -18,10 +18,12 @@ public class FileStorageTest extends spock.lang.Specification {
     }
 
   def "can store and retrieve key"() {
-    expect:
+    setup:
     def tmp = File.createTempDir()
     tmp.deleteOnExit()
     def storage = new FileStorage(tmp)
+
+    expect:
     storage.write(key, value.bytes)
     storage.read(key) == value.bytes
     storage.exists(key) == exists

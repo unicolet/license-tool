@@ -1,4 +1,4 @@
-package it.lic.keypair;
+package it.lic;
 
 /**
  * A Storage interface for all our KP management.
