@@ -12,7 +12,7 @@ public interface Storage {
      * @param key
      * @return data. Exception if not found.
      */
-    byte[] read(String key);
+    byte[] read(String key) throws Exception;
 
     /**
      * Check if a key exists.
@@ -26,5 +26,5 @@ public interface Storage {
      * @param key
      * @param data
      */
-    void write(String key, byte[] data);
+    void write(String key, byte[] data) throws Exception;
 }

@@ -17,17 +17,17 @@ public class InMemoryStorage implements Storage {
     }
 
     @Override
-    public byte[] read(final String key) {
+    public final byte[] read(final String key) {
         return this.map.get(key);
     }
 
     @Override
-    public boolean exists(final String key) {
+    public final boolean exists(final String key) {
         return this.map.containsKey(key);
     }
 
     @Override
-    public void write(final String key, final byte[] data) {
+    public final void write(final String key, final byte[] data) {
         this.map.put(key, data);
     }
 }

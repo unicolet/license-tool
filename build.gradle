@@ -22,6 +22,8 @@ sourceSets {
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.5'
     compile 'io.jsonwebtoken:jjwt:0.6.0'
+    compile 'commons-io:commons-io:2.5'
+
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'org.springframework:spring-test:4.1.6.RELEASE'

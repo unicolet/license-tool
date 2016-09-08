@@ -3,9 +3,7 @@ package it.lic.keypair;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -25,50 +23,50 @@ public interface LicenseKeyPair {
     /**
      * Creates a keypair.
      */
-    void create() throws NoSuchAlgorithmException;
+    void create() throws Exception;
 
     /**
      * Reads and returns  public key.
      */
-    PublicKey readPublicKey() throws NoSuchAlgorithmException, InvalidKeySpecException;
+    PublicKey readPublicKey() throws Exception;
 
-    public class Default implements LicenseKeyPair {
+    class Default implements LicenseKeyPair {
         /**
          * The storage implementation.
          */
-        final private Storage storage;
-        final private String name;
+        private final Storage storage;
+        private final String name;
 
         /**
          * Ctor.
          */
-        public Default(Storage storage, String name) {
+        public Default(final Storage storage, final String name) {
             this.storage=storage;
             this.name=name;
         }
 
         @Override
-        public boolean exists() {
+        public final boolean exists() {
             return this.storage.exists(this.name);
         }
 
         @Override
-        public void create() throws NoSuchAlgorithmException {
+        public final void create() throws Exception {
             final KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-            final KeyPair kp = kpg.generateKeyPair();
+            final KeyPair keypair = kpg.generateKeyPair();
             this.storage.write(
                 this.name,
-                kp.getPublic().getEncoded()
+                keypair.getPublic().getEncoded()
             );
             this.storage.write(
                 String.format("%s/pk", this.name),
-                kp.getPrivate().getEncoded()
+                keypair.getPrivate().getEncoded()
             );
         }
 
         @Override
-        public PublicKey readPublicKey()
-            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        public final PublicKey readPublicKey()
+            throws Exception {
             final KeyFactory keyfactory = KeyFactory.getInstance("RSA");
             final KeySpec keyspec = new X509EncodedKeySpec(
                 this.storage.read(this.name)

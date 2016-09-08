@@ -1,9 +1,12 @@
 package it.lic.keypair;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import org.apache.commons.io.FileUtils;
 
 /**
- * TODO: Add Javadoc.
+ * A file-based Storage impl.
+ *
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  * @version $Id$
  * @since 0.1
@@ -41,17 +44,23 @@ public class FileStorage implements Storage {
     }
 
     @Override
-    public byte[] read(final String key) {
-        return new byte[0];
+    public final byte[] read(final String key) throws Exception {
+        return FileUtils.readFileToByteArray(new File(this.root, key));
     }
 
     @Override
-    public boolean exists(final String key) {
-        return false;
+    public final boolean exists(final String key) {
+        return new File(this.root, key).exists();
     }
 
     @Override
-    public void write(final String key, final byte[] data) {
-
+    public final void write(final String key, final byte[] data) throws Exception {
+        try (
+            final FileOutputStream fos = new FileOutputStream(
+                new File(this.root, key)
+            )
+        ) {
+            fos.write(data);
+        }
     }
 }
