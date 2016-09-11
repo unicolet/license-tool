@@ -8,5 +8,15 @@ package it.lic;
  * @since 0.1
  */
 public interface Key {
- String path();
+    /**
+     * The path identifying this key.
+     * @return
+     */
+    String path();
+
+    /**
+     * If the key is nested.
+     * @return
+     */
+    boolean nested();
 }

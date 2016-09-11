@@ -18,17 +18,19 @@ public class FileStorage implements Storage {
 
     public FileStorage() throws Exception {
         this(
-            String.format(
-                "%s%s%s",
-                System.getProperty("user.home"),
-                System.getProperty("file.separator"),
-                ".lictool"
+            new File(
+                String.format(
+                    "%s%s%s",
+                    System.getProperty("user.home"),
+                    System.getProperty("file.separator"),
+                    ".lictool"
+                )
             )
         );
     }
 
-    public FileStorage(String path) throws Exception {
-        this(new File(path));
+    public FileStorage(Key key) throws Exception {
+        this(new File(key.path()));
     }
 
     public FileStorage(File path) throws Exception {
@@ -46,20 +48,19 @@ public class FileStorage implements Storage {
     }
 
     @Override
-    public final byte[] read(final String key) throws Exception {
-        final File source = new File(this.root, key);
-        System.out.println("Reading from: "+source.getAbsolutePath());
+    public final byte[] read(final Key key) throws Exception {
+        final File source = new File(this.root, key.path());
         return FileUtils.readFileToByteArray(source);
     }
 
     @Override
-    public final boolean exists(final String key) {
-        return new File(this.root, key).exists();
+    public final boolean exists(final Key key) {
+        return new File(this.root, key.path()).exists();
     }
 
     @Override
-    public final void write(final String key, final byte[] data) throws Exception {
-        final File destination = new File(this.root, key);
+    public final void write(final Key key, final byte[] data) throws Exception {
+        final File destination = new File(this.root, key.path());
         if(
             !destination.getParentFile().exists()
             && !destination.getParentFile().mkdirs()) {
@@ -80,24 +81,20 @@ public class FileStorage implements Storage {
     }
 
     @Override
-    public List<String> keys() {
+    public List<Key> keys() {
         final Separator separator = new Separator.Default();
         final File[] files=this.root.listFiles();
-        final List<String> result=new ArrayList<String>(files.length*2);
+        final List<Key> result=new ArrayList<>(files.length*2);
         for(File file: files) {
+            final StorageKey current = new StorageKey(file.getName());
             if(file.isDirectory()) {
                 for (File subfile : file.listFiles()) {
                     result.add(
-                        String.format(
-                            "%s%s%s",
-                            file.getName(),
-                            separator.toString(),
-                            subfile.getName()
-                        )
+                        new NestedKey(current, subfile.getName())
                     );
                 }
             } else {
-                result.add(file.getName());
+                result.add(current);
             }
         }
         return result;

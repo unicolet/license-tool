@@ -10,7 +10,7 @@ public class FileStorageTest extends spock.lang.Specification {
       def storage = new FileStorage(tmp)
 
       expect:
-      storage.exists(key) == exists
+      storage.exists(new StorageKey(key)) == exists
 
       where:
       key          | exists
@@ -24,9 +24,9 @@ public class FileStorageTest extends spock.lang.Specification {
     def storage = new FileStorage(tmp)
 
     expect:
-    storage.write(key, value.bytes)
-    storage.read(key) == value.bytes
-    storage.exists(key) == exists
+    storage.write(new StorageKey(key), value.bytes)
+    storage.read(new StorageKey(key)) == value.bytes
+    storage.exists(new StorageKey(key)) == exists
 
     where:
     key  | value | exists
@@ -48,8 +48,8 @@ public class FileStorageTest extends spock.lang.Specification {
     def tmp = File.createTempDir()
     tmp.deleteOnExit()
     def storage = new FileStorage(tmp)
-    storage.write("a","".bytes)
-    storage.write("b","".bytes)
+    storage.write(new StorageKey("a"),"".bytes)
+    storage.write(new StorageKey("b"),"".bytes)
 
     expect:
     storage.keys().size() == 2
@@ -60,10 +60,11 @@ public class FileStorageTest extends spock.lang.Specification {
     def tmp = File.createTempDir()
     tmp.deleteOnExit()
     def storage = new FileStorage(tmp)
-    storage.write("a","".bytes)
-    storage.write("b","".bytes)
-    storage.write("c/d","".bytes)
-    storage.write("c/e","".bytes)
+    storage.write(new StorageKey("a"),"".bytes)
+    storage.write(new StorageKey("b"),"".bytes)
+    def c = new StorageKey("c");
+    storage.write(new NestedKey(c, "d"),"".bytes)
+    storage.write(new NestedKey(c, "e"),"".bytes)
 
     expect:
     storage.keys().size() == 4

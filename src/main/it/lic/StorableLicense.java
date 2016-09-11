@@ -31,11 +31,10 @@ public class StorableLicense implements License {
         return this.origin.signer();
     }
 
-    public String path() {
-        return String.format(
-            "%s/%s",
-            this.origin.signer().name(),
-            this.origin.name()
+    public Key path() {
+        return new NestedKey(
+            new StorageKey(this.origin.signer().name()),
+            this.name()
         );
     }
 }

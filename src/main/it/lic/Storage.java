@@ -14,24 +14,24 @@ public interface Storage {
      * @param key
      * @return data. Exception if not found.
      */
-    byte[] read(String key) throws Exception;
+    byte[] read(Key key) throws Exception;
 
     /**
      * Check if a key exists.
      * @param key
      * @return true if it exists.
      */
-    boolean exists(String key);
+    boolean exists(Key key);
 
     /**
      * Writes data in our storage implementation.
      * @param key
      * @param data
      */
-    void write(String key, byte[] data) throws Exception;
+    void write(Key key, byte[] data) throws Exception;
 
     /**
      * Returns all keys.
      */
-    List<String> keys();
+    List<Key> keys();
 }

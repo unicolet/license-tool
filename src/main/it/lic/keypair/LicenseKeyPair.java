@@ -2,8 +2,10 @@ package it.lic.keypair;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.SignatureAlgorithm;
+import it.lic.Key;
 import it.lic.License;
-import it.lic.Separator;
+import it.lic.PkKey;
+import it.lic.PubKey;
 import it.lic.Storage;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -64,11 +66,11 @@ public interface LicenseKeyPair {
             final KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
             final KeyPair keypair = kpg.generateKeyPair();
             this.storage.write(
-                String.format("%s.pub",this.name),
+                new PubKey(this.name),
                 keypair.getPublic().getEncoded()
             );
             this.storage.write(
-                String.format("%s.priv", this.name),
+                new PkKey(this.name),
                 keypair.getPrivate().getEncoded()
             );
         }
@@ -76,7 +78,9 @@ public interface LicenseKeyPair {
         @Override
         public void sign(final JwtBuilder jwt) throws Exception {
             final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(
-                this.storage.read(String.format("%s.priv", this.name))
+                this.storage.read(
+                    new PkKey(this.name)
+                )
             );
             final KeyFactory kf = KeyFactory.getInstance("RSA");
             jwt.signWith(SignatureAlgorithm.RS512, kf.generatePrivate(spec));
@@ -87,7 +91,9 @@ public interface LicenseKeyPair {
             throws Exception {
             final KeyFactory keyfactory = KeyFactory.getInstance("RSA");
             final KeySpec keyspec = new X509EncodedKeySpec(
-                this.storage.read(String.format("%s.pub",this.name))
+                this.storage.read(
+                    new PubKey(this.name)
+                )
             );
             return keyfactory.generatePublic(keyspec);
         }
@@ -100,14 +106,9 @@ public interface LicenseKeyPair {
         @Override
         public Iterator<License> licenses(final String namefilter) throws Exception {
             final Collection<License> licenses = new ArrayList<>(1);
-            for( final String key : this.storage.keys() ) {
-                final Separator separator = new Separator.Default();
-                if(key.contains(separator.toString())) {
-                    final String[] parts = key.split(separator.toString());
-                    if(
-                        parts[0].equals(this.name)
-                        && parts[1].toLowerCase().contains(namefilter.toLowerCase())
-                        ) {
+            for( final Key key : this.storage.keys() ) {
+                if(key.nested()) {
+                    if(key.path().toLowerCase().contains(namefilter.toLowerCase())) {
                         licenses.add(new License.FromByte(
                             this.storage.read(key),
                             this
