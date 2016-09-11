@@ -6,7 +6,8 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 
 /**
- * TODO: Add Javadoc.
+ * A license iterable.
+ *
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  * @version $Id$
  * @since 0.1
