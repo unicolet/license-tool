@@ -70,7 +70,6 @@ public class FileStorage implements Storage {
                 )
             );
         }
-        System.out.println("Writing to: "+destination.getAbsolutePath());
         try (
             final FileOutputStream fos = new FileOutputStream(
                 destination
@@ -82,13 +81,19 @@ public class FileStorage implements Storage {
 
     @Override
     public List<String> keys() {
-        File[] files=this.root.listFiles();
+        final Separator separator = new Separator.Default();
+        final File[] files=this.root.listFiles();
         final List<String> result=new ArrayList<String>(files.length*2);
         for(File file: files) {
             if(file.isDirectory()) {
                 for (File subfile : file.listFiles()) {
                     result.add(
-                        String.format("%s/%s", file.getName(), subfile.getName())
+                        String.format(
+                            "%s%s%s",
+                            file.getName(),
+                            separator.toString(),
+                            subfile.getName()
+                        )
                     );
                 }
             } else {

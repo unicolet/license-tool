@@ -3,6 +3,7 @@ package it.lic.keypair;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.SignatureAlgorithm;
 import it.lic.License;
+import it.lic.Separator;
 import it.lic.Storage;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -12,8 +13,8 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * A Private/Public key pair.
@@ -98,16 +99,17 @@ public interface LicenseKeyPair {
 
         @Override
         public Iterator<License> licenses(final String namefilter) throws Exception {
-            List<License> licenses = new ArrayList<>(1);
-            for( String key : this.storage.keys() ) {
-                if(key.contains("/")) {
-                    final String[] parts = key.split("/");
+            final Collection<License> licenses = new ArrayList<>(1);
+            for( final String key : this.storage.keys() ) {
+                final Separator separator = new Separator.Default();
+                if(key.contains(separator.toString())) {
+                    final String[] parts = key.split(separator.toString());
                     if(
                         parts[0].equals(this.name)
                         && parts[1].toLowerCase().contains(namefilter.toLowerCase())
                         ) {
                         licenses.add(new License.FromByte(
-                            storage.read(key),
+                            this.storage.read(key),
                             this
                         ));
                     }
