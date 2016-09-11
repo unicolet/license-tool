@@ -34,4 +34,9 @@ public final class NestedKey implements Key {
     public boolean nested() {
         return true;
     }
+
+    @Override
+    public Key parentKey() {
+        return this.parent;
+    }
 }

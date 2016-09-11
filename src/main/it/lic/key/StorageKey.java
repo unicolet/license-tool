@@ -28,4 +28,9 @@ public final class StorageKey implements Key {
         return false;
     }
 
+    @Override
+    public Key parentKey() {
+        return new Key.Root();
+    }
+
 }

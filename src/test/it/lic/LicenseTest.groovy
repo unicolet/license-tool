@@ -113,10 +113,7 @@ public class LicenseTest extends spock.lang.Specification {
     )
     storage.write(new StorableLicense(license).path(), license.encode().bytes)
 
-    def tmp2 = File.createTempDir()
-    tmp2.deleteOnExit()
-    def storage2 = new FileStorage(tmp2);
-    def keypair2 = new LicenseKeyPair.Default(storage2, "abc")
+    def keypair2 = new LicenseKeyPair.Default(storage, "abc2")
     def license2 = new License.Default(
       "server1.example.org",
       keypair2,
@@ -124,7 +121,7 @@ public class LicenseTest extends spock.lang.Specification {
       new Date(),
       Collections.emptyMap()
     )
-    storage2.write(new StorableLicense(license2).path(), license2.encode().bytes)
+    storage.write(new StorableLicense(license2).path(), license2.encode().bytes)
     Iterator licenses = keypair.licenses("Server1")
 
     expect:

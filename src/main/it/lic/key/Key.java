@@ -25,4 +25,36 @@ public interface Key {
      * @return
      */
     boolean nested();
+
+    /**
+     * The parent Key.
+     * @return
+     */
+    Key parentKey();
+
+    /**
+     * The Root key.
+     */
+    final class Root implements Key {
+
+        @Override
+        public String fullpath() {
+            return "";
+        }
+
+        @Override
+        public String path() {
+            return "";
+        }
+
+        @Override
+        public boolean nested() {
+            return false;
+        }
+
+        @Override
+        public Key parentKey() {
+            return this;
+        }
+    }
 }

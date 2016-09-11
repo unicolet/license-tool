@@ -27,4 +27,9 @@ public class PubKey implements Key {
     public boolean nested() {
         return false;
     }
+
+    @Override
+    public Key parentKey() {
+        return new Key.Root();
+    }
 }

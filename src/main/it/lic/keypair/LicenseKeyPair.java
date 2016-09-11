@@ -108,7 +108,9 @@ public interface LicenseKeyPair {
             final Collection<License> licenses = new ArrayList<>(1);
             for( final Key key : this.storage.keys() ) {
                 if(key.nested()) {
-                    if(key.path().toLowerCase().contains(namefilter.toLowerCase())) {
+                    if( key.parentKey().path().equals(this.name)
+                        && key.path().toLowerCase().contains(namefilter.toLowerCase())
+                        ) {
                         licenses.add(new License.FromByte(
                             this.storage.read(key),
                             this
