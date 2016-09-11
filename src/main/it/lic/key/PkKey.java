@@ -1,7 +1,7 @@
 package it.lic.key;
 
 /**
- * A Key representing a private key path.
+ * A Key representing a private key fullpath.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  * @version $Id$
  * @since 0.1
@@ -14,8 +14,13 @@ public class PkKey implements Key {
     }
 
     @Override
-    public String path() {
+    public String fullpath() {
         return String.format("%s.priv", this.name);
+    }
+
+    @Override
+    public String path() {
+        return this.name;
     }
 
     @Override

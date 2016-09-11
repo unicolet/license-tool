@@ -1,7 +1,7 @@
 package it.lic.key;
 
 /**
- * A Key path components separator.
+ * A Key fullpath components separator.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  * @version $Id$
  * @since 0.1

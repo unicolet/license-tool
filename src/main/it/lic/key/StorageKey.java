@@ -14,6 +14,11 @@ public final class StorageKey implements Key {
     }
 
     @Override
+    public String fullpath() {
+        return this.path;
+    }
+
+    @Override
     public String path() {
         return this.path;
     }

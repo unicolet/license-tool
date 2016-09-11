@@ -97,4 +97,42 @@ public class LicenseTest extends spock.lang.Specification {
 
     !keypair.licenses("server2").hasNext()
   }
+
+  def "can filter licenses belonging to a specific keypair"() {
+    setup:
+    def tmp = File.createTempDir()
+    tmp.deleteOnExit()
+    def storage = new FileStorage(tmp);
+    def keypair = new LicenseKeyPair.Default(storage, "abc")
+    def license = new License.Default(
+      "server1.example.org",
+      keypair,
+      "Umberto Nicoletti",
+      new Date(),
+      Collections.emptyMap()
+    )
+    storage.write(new StorableLicense(license).path(), license.encode().bytes)
+
+    def tmp2 = File.createTempDir()
+    tmp2.deleteOnExit()
+    def storage2 = new FileStorage(tmp2);
+    def keypair2 = new LicenseKeyPair.Default(storage2, "abc")
+    def license2 = new License.Default(
+      "server1.example.org",
+      keypair2,
+      "Umberto Nicoletti",
+      new Date(),
+      Collections.emptyMap()
+    )
+    storage2.write(new StorableLicense(license2).path(), license2.encode().bytes)
+    Iterator licenses = keypair.licenses("Server1")
+
+    expect:
+    licenses.hasNext()
+    licenses.next().encode() == license.encode()
+    !licenses.hasNext()
+    keypair.licenses("server1").hasNext()
+
+    !keypair.licenses("server2").hasNext()
+  }
 }

@@ -34,7 +34,7 @@ public class FileStorage implements Storage {
     }
 
     public FileStorage(Key key) throws Exception {
-        this(new File(key.path()));
+        this(new File(key.fullpath()));
     }
 
     public FileStorage(File path) throws Exception {
@@ -53,24 +53,24 @@ public class FileStorage implements Storage {
 
     @Override
     public final byte[] read(final Key key) throws Exception {
-        final File source = new File(this.root, key.path());
+        final File source = new File(this.root, key.fullpath());
         return FileUtils.readFileToByteArray(source);
     }
 
     @Override
     public final boolean exists(final Key key) {
-        return new File(this.root, key.path()).exists();
+        return new File(this.root, key.fullpath()).exists();
     }
 
     @Override
     public final void write(final Key key, final byte[] data) throws Exception {
-        final File destination = new File(this.root, key.path());
+        final File destination = new File(this.root, key.fullpath());
         if(
             !destination.getParentFile().exists()
             && !destination.getParentFile().mkdirs()) {
             throw new Exception(
                 String.format(
-                    "Cannot create path to store: %s",
+                    "Cannot create fullpath to store: %s",
                     destination.getAbsolutePath()
                 )
             );

@@ -9,7 +9,13 @@ package it.lic.key;
  */
 public interface Key {
     /**
-     * The path identifying this key.
+     * The full (parents + this) path identifying this key.
+     * @return
+     */
+    String fullpath();
+
+    /**
+     * The relative path identifying this key.
      * @return
      */
     String path();

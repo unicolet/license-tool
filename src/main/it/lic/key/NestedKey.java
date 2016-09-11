@@ -16,13 +16,18 @@ public final class NestedKey implements Key {
     }
 
     @Override
-    public String path() {
+    public String fullpath() {
         return String.format(
             "%s%s%s",
-            this.parent.path(),
+            this.parent.fullpath(),
             new Separator.Default(),
             this.path
         );
+    }
+
+    @Override
+    public String path() {
+        return this.path;
     }
 
     @Override
