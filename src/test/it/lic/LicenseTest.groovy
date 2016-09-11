@@ -36,9 +36,9 @@ public class LicenseTest extends spock.lang.Specification {
       new Date(),
       Collections.emptyMap()
     )
-    storage.write(license.path(), license.encode().bytes)
+    storage.write(new StorableLicense(license).path(), license.encode().bytes)
 
     expect:
-    storage.read(license.path()) == license.encode().bytes
+    storage.read(new StorableLicense(license).path()) == license.encode().bytes
   }
 }

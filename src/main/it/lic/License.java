@@ -21,10 +21,16 @@ public interface License {
     String encode() throws Exception;
 
     /**
-     * An absolute path for our storage.
+     * The license name.
      * @return
      */
-    String path();
+    String name();
+
+    /**
+     * The keypair that signed this license.
+     * @return the license key pair.
+     */
+    LicenseKeyPair signer();
 
     final class Default implements License {
         private final String name;
@@ -61,8 +67,13 @@ public interface License {
             return builder.compact();        }
 
         @Override
-        public String path() {
-            return String.format("%s:%s", this.keypair.name(), this.name);
+        public String name() {
+            return this.name;
+        }
+
+        @Override
+        public LicenseKeyPair signer() {
+            return this.keypair;
         }
     }
 }
