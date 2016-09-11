@@ -13,7 +13,7 @@ public class LicenseKeyPairTest extends spock.lang.Specification {
     )
 
     expect:
-    license.readPublicKey() != null
+    license.publicKey() != null
 
     where:
     name      | exists

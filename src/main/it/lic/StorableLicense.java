@@ -32,7 +32,7 @@ public class StorableLicense implements License {
 
     public String path() {
         return String.format(
-            "%s:%s",
+            "%s/%s",
             this.origin.signer().name(),
             this.origin.name()
         );

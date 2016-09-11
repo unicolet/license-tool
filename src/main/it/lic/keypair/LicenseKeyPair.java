@@ -29,7 +29,7 @@ public interface LicenseKeyPair {
     /**
      * Reads and returns  public key.
      */
-    PublicKey readPublicKey() throws Exception;
+    PublicKey publicKey() throws Exception;
 
     /**
      * The name of this kp.
@@ -54,11 +54,11 @@ public interface LicenseKeyPair {
             final KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
             final KeyPair keypair = kpg.generateKeyPair();
             this.storage.write(
-                this.name,
+                String.format("%s.pub",this.name),
                 keypair.getPublic().getEncoded()
             );
             this.storage.write(
-                String.format("%s.pk", this.name),
+                String.format("%s.priv", this.name),
                 keypair.getPrivate().getEncoded()
             );
         }
@@ -66,18 +66,18 @@ public interface LicenseKeyPair {
         @Override
         public void sign(final JwtBuilder jwt) throws Exception {
             final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(
-                this.storage.read(String.format("%s.pk", this.name))
+                this.storage.read(String.format("%s.priv", this.name))
             );
             final KeyFactory kf = KeyFactory.getInstance("RSA");
             jwt.signWith(SignatureAlgorithm.RS512, kf.generatePrivate(spec));
         }
 
         @Override
-        public PublicKey readPublicKey()
+        public PublicKey publicKey()
             throws Exception {
             final KeyFactory keyfactory = KeyFactory.getInstance("RSA");
             final KeySpec keyspec = new X509EncodedKeySpec(
-                this.storage.read(this.name)
+                this.storage.read(String.format("%s.pub",this.name))
             );
             return keyfactory.generatePublic(keyspec);
         }
@@ -86,6 +86,5 @@ public interface LicenseKeyPair {
         public String name() {
             return this.name;
         }
-
     }
 }

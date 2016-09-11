@@ -45,7 +45,9 @@ public class FileStorage implements Storage {
 
     @Override
     public final byte[] read(final String key) throws Exception {
-        return FileUtils.readFileToByteArray(new File(this.root, key));
+        final File source = new File(this.root, key);
+        System.out.println("Reading from: "+source.getAbsolutePath());
+        return FileUtils.readFileToByteArray(source);
     }
 
     @Override
@@ -55,9 +57,21 @@ public class FileStorage implements Storage {
 
     @Override
     public final void write(final String key, final byte[] data) throws Exception {
+        final File destination = new File(this.root, key);
+        if(
+            !destination.getParentFile().exists()
+            && !destination.getParentFile().mkdirs()) {
+            throw new Exception(
+                String.format(
+                    "Cannot create path to store: %s",
+                    destination.getAbsolutePath()
+                )
+            );
+        }
+        System.out.println("Writing to: "+destination.getAbsolutePath());
         try (
             final FileOutputStream fos = new FileOutputStream(
-                new File(this.root, key)
+                destination
             )
         ) {
             fos.write(data);
