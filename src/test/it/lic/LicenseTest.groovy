@@ -50,7 +50,7 @@ public class LicenseTest extends spock.lang.Specification {
     def keypair = new LicenseKeyPair.Default(storage, "abc")
 
     expect:
-    !keypair.licenses("").iterator().hasNext()
+    !keypair.licenses("").hasNext()
   }
 
   def "can list all licenses belonging to a keypair"() {
@@ -69,6 +69,6 @@ public class LicenseTest extends spock.lang.Specification {
     storage.write(new StorableLicense(license).path(), license.encode().bytes)
 
     expect:
-    keypair.licenses("").iterator().hasNext()
+    keypair.licenses("").hasNext()
   }
 }

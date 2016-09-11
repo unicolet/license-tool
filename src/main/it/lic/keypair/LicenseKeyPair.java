@@ -11,6 +11,9 @@ import java.security.PublicKey;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A Private/Public key pair.
@@ -41,7 +44,7 @@ public interface LicenseKeyPair {
     /**
      * A list of licenses optionally filtered by name (contains).
      */
-    Iterable<License> licenses(String namefilter);
+    Iterator<License> licenses(String namefilter) throws Exception;
 
     final class Default implements LicenseKeyPair {
         /**
@@ -94,8 +97,17 @@ public interface LicenseKeyPair {
         }
 
         @Override
-        public Iterable<License> licenses(final String namefilter) {
-            return new LicenseIterable();
+        public Iterator<License> licenses(final String namefilter) throws Exception {
+            List<License> licenses = new ArrayList<>(1);
+            for( String key : this.storage.keys() ) {
+                if(key.contains("/") && key.split("/")[0].contains(namefilter)) {
+                    licenses.add(new License.FromByte(
+                        storage.read(key),
+                        this
+                    ));
+                }
+            }
+            return licenses.iterator();
         }
     }
 }

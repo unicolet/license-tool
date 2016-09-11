@@ -1,8 +1,10 @@
 package it.lic;
 
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import it.lic.keypair.LicenseKeyPair;
+import java.security.PublicKey;
 import java.util.Date;
 import java.util.Map;
 
@@ -67,12 +69,43 @@ public interface License {
             for(final Map.Entry<String, String> header : this.headers.entrySet()) {
                 builder.setHeaderParam(header.getKey(), header.getValue());
             }
+            builder.setHeaderParam("name", this.name);
             this.keypair.sign(builder);
             return builder.compact();        }
 
         @Override
         public String name() {
             return this.name;
+        }
+
+        @Override
+        public LicenseKeyPair signer() {
+            return this.keypair;
+        }
+    }
+
+    final class FromByte implements License {
+        private final byte[] bytes;
+        private final LicenseKeyPair keypair;
+        private final PublicKey pubkey;
+
+        public FromByte(byte[] bytes, LicenseKeyPair keypair) throws Exception {
+            this.bytes = bytes;
+            this.keypair = keypair;
+            this.pubkey = keypair.publicKey();
+        }
+
+        @Override
+        public String encode() throws Exception {
+            return new String(bytes);
+        }
+
+        @Override
+        public String name() {
+            final Jwt token = Jwts.parser()
+                .setSigningKey(this.pubkey)
+                .parse(new String(this.bytes));
+            return (String) token.getHeader().get("name");
         }
 
         @Override
