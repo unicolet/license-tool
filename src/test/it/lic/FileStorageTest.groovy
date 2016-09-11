@@ -1,4 +1,8 @@
 package it.lic
+
+import it.lic.key.NestedKey
+import it.lic.key.StorageKey
+
 /**
  * Test suite for FileStorage functionality.
  */

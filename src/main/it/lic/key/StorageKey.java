@@ -1,4 +1,4 @@
-package it.lic;
+package it.lic.key;
 
 /**
  * A Storage Key implementation.

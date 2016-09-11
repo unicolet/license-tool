@@ -1,5 +1,8 @@
 package it.lic;
 
+import it.lic.key.Key;
+import it.lic.key.NestedKey;
+import it.lic.key.StorageKey;
 import it.lic.keypair.LicenseKeyPair;
 
 /**

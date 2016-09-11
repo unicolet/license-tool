@@ -2,10 +2,10 @@ package it.lic.keypair;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.SignatureAlgorithm;
-import it.lic.Key;
+import it.lic.key.Key;
 import it.lic.License;
-import it.lic.PkKey;
-import it.lic.PubKey;
+import it.lic.key.PkKey;
+import it.lic.key.PubKey;
 import it.lic.Storage;
 import java.security.KeyFactory;
 import java.security.KeyPair;
