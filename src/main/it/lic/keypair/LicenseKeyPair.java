@@ -100,11 +100,17 @@ public interface LicenseKeyPair {
         public Iterator<License> licenses(final String namefilter) throws Exception {
             List<License> licenses = new ArrayList<>(1);
             for( String key : this.storage.keys() ) {
-                if(key.contains("/") && key.split("/")[0].contains(namefilter)) {
-                    licenses.add(new License.FromByte(
-                        storage.read(key),
-                        this
-                    ));
+                if(key.contains("/")) {
+                    final String[] parts = key.split("/");
+                    if(
+                        parts[0].equals(this.name)
+                        && parts[1].toLowerCase().contains(namefilter.toLowerCase())
+                        ) {
+                        licenses.add(new License.FromByte(
+                            storage.read(key),
+                            this
+                        ));
+                    }
                 }
             }
             return licenses.iterator();
