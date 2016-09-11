@@ -70,5 +70,7 @@ public class LicenseTest extends spock.lang.Specification {
 
     expect:
     keypair.licenses("").hasNext()
+    keypair.licenses("").next().encode() == license.encode()
+    keypair.licenses("").next().name() == license.name()
   }
 }
