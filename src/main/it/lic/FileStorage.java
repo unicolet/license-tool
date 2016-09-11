@@ -2,6 +2,8 @@ package it.lic;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -76,5 +78,23 @@ public class FileStorage implements Storage {
         ) {
             fos.write(data);
         }
+    }
+
+    @Override
+    public List<String> keys() {
+        File[] files=this.root.listFiles();
+        final List<String> result=new ArrayList<String>(files.length*2);
+        for(File file: files) {
+            if(file.isDirectory()) {
+                for (File subfile : file.listFiles()) {
+                    result.add(
+                        String.format("%s/%s", file.getName(), subfile.getName())
+                    );
+                }
+            } else {
+                result.add(file.getName());
+            }
+        }
+        return result;
     }
 }

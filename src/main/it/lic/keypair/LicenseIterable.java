@@ -14,16 +14,28 @@ import java.util.function.Consumer;
 public class LicenseIterable implements Iterable<License> {
     @Override
     public Iterator<License> iterator() {
-        return null;
+        return new LicenseIterator();
     }
 
     @Override
     public void forEach(final Consumer<? super License> action) {
-
+        throw new UnsupportedOperationException("Unsupported operation.");
     }
 
     @Override
     public Spliterator<License> spliterator() {
-        return null;
+        throw new UnsupportedOperationException("Unsupported operation.");
+    }
+
+    private class LicenseIterator implements Iterator<License> {
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public License next() {
+            return null;
+        }
     }
 }

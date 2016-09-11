@@ -1,5 +1,7 @@
 package it.lic;
 
+import java.util.List;
+
 /**
  * A Storage interface for all our KP management.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
@@ -27,4 +29,9 @@ public interface Storage {
      * @param data
      */
     void write(String key, byte[] data) throws Exception;
+
+    /**
+     * Returns all keys.
+     */
+    List<String> keys();
 }
