@@ -3,7 +3,8 @@ package it.lic;
 import it.lic.keypair.LicenseKeyPair;
 
 /**
- * TODO: Add Javadoc.
+ * A license that can be stored to a storage.
+ *
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  * @version $Id$
  * @since 0.1

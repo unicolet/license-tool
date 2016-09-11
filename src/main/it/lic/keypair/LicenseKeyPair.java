@@ -2,6 +2,7 @@ package it.lic.keypair;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.SignatureAlgorithm;
+import it.lic.License;
 import it.lic.Storage;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -36,6 +37,11 @@ public interface LicenseKeyPair {
      * @return
      */
     String name();
+
+    /**
+     * A list of licenses optionally filtered by name (contains).
+     */
+    Iterable<License> licenses(String namefilter);
 
     final class Default implements LicenseKeyPair {
         /**
@@ -85,6 +91,11 @@ public interface LicenseKeyPair {
         @Override
         public String name() {
             return this.name;
+        }
+
+        @Override
+        public Iterable<License> licenses(final String namefilter) {
+            return new LicenseIterable();
         }
     }
 }

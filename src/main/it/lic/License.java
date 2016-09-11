@@ -27,6 +27,10 @@ public interface License {
     String name();
 
     /**
+     *
+     */
+
+    /**
      * The keypair that signed this license.
      * @return the license key pair.
      */

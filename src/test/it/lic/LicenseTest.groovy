@@ -41,4 +41,15 @@ public class LicenseTest extends spock.lang.Specification {
     expect:
     storage.read(new StorableLicense(license).path()) == license.encode().bytes
   }
+
+  def "can list all licenses belonging to a new keypair"() {
+    setup:
+    def tmp = File.createTempDir()
+    tmp.deleteOnExit()
+    def storage = new FileStorage(tmp);
+    def keypair = new LicenseKeyPair.Default(storage, "abc")
+
+    expect:
+    !keypair.licenses("").iterator().hasNext()
+  }
 }
