@@ -1,4 +1,4 @@
-package it.lic;
+package it.lic.storage;
 
 import it.lic.key.Key;
 import java.util.List;

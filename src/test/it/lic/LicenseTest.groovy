@@ -1,16 +1,13 @@
 package it.lic
-
-import it.lic.keypair.LicenseKeyPair
 /**
  * Test suite for KeyPair functionality.
  */
 public class LicenseTest extends spock.lang.Specification {
+
   def "can build a license"() {
     setup:
-    def tmp = File.createTempDir()
-    tmp.deleteOnExit()
-    def storage = new FileStorage(tmp);
-    def keypair = new LicenseKeyPair.Default(storage, "abc")
+    def wallet = new Wallet.Default(new TempFileStorage())
+    def keypair = wallet.newLicenseKeyPair("abc")
     def license = new License.Default(
       "server1.example.org",
       keypair,
@@ -25,10 +22,9 @@ public class LicenseTest extends spock.lang.Specification {
 
   def "can store and retrieve a license"() {
     setup:
-    def tmp = File.createTempDir()
-    tmp.deleteOnExit()
-    def storage = new FileStorage(tmp);
-    def keypair = new LicenseKeyPair.Default(storage, "abc")
+    def storage = new TempFileStorage()
+    def wallet = new Wallet.Default(storage)
+    def keypair = wallet.newLicenseKeyPair("abc")
     def license = new License.Default(
       "server1.example.org",
       keypair,
@@ -44,21 +40,19 @@ public class LicenseTest extends spock.lang.Specification {
 
   def "can list all licenses belonging to a new keypair"() {
     setup:
-    def tmp = File.createTempDir()
-    tmp.deleteOnExit()
-    def storage = new FileStorage(tmp);
-    def keypair = new LicenseKeyPair.Default(storage, "abc")
+    def storage = new TempFileStorage()
+    def wallet = new Wallet.Default(storage)
+    def keypair = wallet.newLicenseKeyPair("abc")
 
     expect:
-    !keypair.licenses("").hasNext()
+    !wallet.licenses(keypair, "").hasNext()
   }
 
   def "can list all licenses belonging to a keypair"() {
     setup:
-    def tmp = File.createTempDir()
-    tmp.deleteOnExit()
-    def storage = new FileStorage(tmp);
-    def keypair = new LicenseKeyPair.Default(storage, "abc")
+    def storage = new TempFileStorage()
+    def wallet = new Wallet.Default(storage)
+    def keypair = wallet.newLicenseKeyPair("abc")
     def license = new License.Default(
       "server1.example.org",
       keypair,
@@ -69,17 +63,16 @@ public class LicenseTest extends spock.lang.Specification {
     storage.write(new StorableLicense(license).path(), license.encode().bytes)
 
     expect:
-    keypair.licenses("").hasNext()
-    keypair.licenses("").next().encode() == license.encode()
-    keypair.licenses("").next().name() == license.name()
+    wallet.licenses(keypair, "").hasNext()
+    wallet.licenses(keypair, "").next().encode() == license.encode()
+    wallet.licenses(keypair, "").next().name() == license.name()
   }
 
   def "can filter licenses belonging to a keypair"() {
     setup:
-    def tmp = File.createTempDir()
-    tmp.deleteOnExit()
-    def storage = new FileStorage(tmp);
-    def keypair = new LicenseKeyPair.Default(storage, "abc")
+    def storage = new TempFileStorage()
+    def wallet = new Wallet.Default(storage)
+    def keypair = wallet.newLicenseKeyPair("abc")
     def license = new License.Default(
       "server1.example.org",
       keypair,
@@ -90,20 +83,19 @@ public class LicenseTest extends spock.lang.Specification {
     storage.write(new StorableLicense(license).path(), license.encode().bytes)
 
     expect:
-    keypair.licenses("Server1").hasNext()
-    keypair.licenses("server1").hasNext()
-    keypair.licenses("server1").next().encode() == license.encode()
-    keypair.licenses("server1").next().name() == license.name()
+    wallet.licenses(keypair, "Server1").hasNext()
+    wallet.licenses(keypair, "server1").hasNext()
+    wallet.licenses(keypair, "server1").next().encode() == license.encode()
+    wallet.licenses(keypair, "server1").next().name() == license.name()
 
-    !keypair.licenses("server2").hasNext()
+    !wallet.licenses(keypair, "server2").hasNext()
   }
 
   def "can filter licenses belonging to a specific keypair"() {
     setup:
-    def tmp = File.createTempDir()
-    tmp.deleteOnExit()
-    def storage = new FileStorage(tmp);
-    def keypair = new LicenseKeyPair.Default(storage, "abc")
+    def storage = new TempFileStorage()
+    def wallet = new Wallet.Default(storage)
+    def keypair = wallet.newLicenseKeyPair("abc")
     def license = new License.Default(
       "server1.example.org",
       keypair,
@@ -113,7 +105,7 @@ public class LicenseTest extends spock.lang.Specification {
     )
     storage.write(new StorableLicense(license).path(), license.encode().bytes)
 
-    def keypair2 = new LicenseKeyPair.Default(storage, "abc2")
+    def keypair2 = wallet.newLicenseKeyPair("def")
     def license2 = new License.Default(
       "server1.example.org",
       keypair2,
@@ -122,14 +114,14 @@ public class LicenseTest extends spock.lang.Specification {
       Collections.emptyMap()
     )
     storage.write(new StorableLicense(license2).path(), license2.encode().bytes)
-    Iterator licenses = keypair.licenses("Server1")
+    Iterator licenses = wallet.licenses(keypair, "Server1")
 
     expect:
     licenses.hasNext()
     licenses.next().encode() == license.encode()
     !licenses.hasNext()
-    keypair.licenses("server1").hasNext()
+    wallet.licenses(keypair, "server1").hasNext()
 
-    !keypair.licenses("server2").hasNext()
+    !wallet.licenses(keypair, "server2").hasNext()
   }
 }

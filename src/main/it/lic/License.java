@@ -3,6 +3,7 @@ package it.lic;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import it.lic.keypair.LicenseKeyPair;
 import java.security.PublicKey;
 import java.util.Date;
@@ -70,7 +71,7 @@ public interface License {
                 builder.setHeaderParam(header.getKey(), header.getValue());
             }
             builder.setHeaderParam("name", this.name);
-            this.keypair.sign(builder);
+            builder.signWith(SignatureAlgorithm.RS512, this.keypair.privateKey());
             return builder.compact();        }
 
         @Override

@@ -2,6 +2,7 @@ package it.lic
 
 import it.lic.key.NestedKey
 import it.lic.key.StorageKey
+import it.lic.storage.FileStorage
 
 /**
  * Test suite for FileStorage functionality.
