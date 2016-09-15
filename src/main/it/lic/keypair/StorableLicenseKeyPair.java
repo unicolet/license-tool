@@ -1,5 +1,6 @@
 package it.lic.keypair;
 
+import it.lic.error.LicenseToolException;
 import it.lic.key.PkKey;
 import it.lic.key.PubKey;
 import it.lic.storage.Storage;
@@ -20,12 +21,12 @@ public final class StorableLicenseKeyPair implements LicenseKeyPair {
     }
 
     @Override
-    public PublicKey publicKey() {
+    public PublicKey publicKey() throws LicenseToolException {
         return this.lkp.publicKey();
     }
 
     @Override
-    public PrivateKey privateKey() {
+    public PrivateKey privateKey() throws LicenseToolException {
         return this.lkp.privateKey();
     }
 
@@ -34,7 +35,7 @@ public final class StorableLicenseKeyPair implements LicenseKeyPair {
         return this.lkp.name();
     }
 
-    public void save(Storage storage) throws Exception {
+    public void save(final Storage storage) throws Exception {
         storage.write(
             new PubKey(this.lkp.name()),
             this.lkp.publicKey().getEncoded()
@@ -43,10 +44,5 @@ public final class StorableLicenseKeyPair implements LicenseKeyPair {
             new PkKey(this.lkp.name()),
             this.lkp.privateKey().getEncoded()
         );
-    }
-
-    public boolean exists(Storage storage) throws Exception {
-        return storage.exists(new PubKey(this.lkp.name()))
-            && storage.exists(new PkKey(this.lkp.name()));
     }
 }

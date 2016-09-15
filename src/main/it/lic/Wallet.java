@@ -2,6 +2,7 @@ package it.lic;
 
 import it.lic.key.Key;
 import it.lic.keypair.LicenseKeyPair;
+import it.lic.keypair.ReadableLicenseKeyPair;
 import it.lic.keypair.StorableLicenseKeyPair;
 import it.lic.storage.Storage;
 import java.security.KeyPairGenerator;
@@ -19,6 +20,8 @@ public interface Wallet {
     Iterator<License> licenses(LicenseKeyPair lkp, String filter) throws Exception;
 
     LicenseKeyPair newLicenseKeyPair(String name) throws Exception ;
+
+    LicenseKeyPair licenseKeyPair(String name) throws Exception ;
 
     final class Default implements Wallet {
         final Storage storage;
@@ -55,6 +58,11 @@ public interface Wallet {
             lkp.save(this.storage);
 
             return lkp;
+        }
+
+        @Override
+        public LicenseKeyPair licenseKeyPair(String name) throws Exception {
+            return new ReadableLicenseKeyPair(name, this.storage);
         }
     }
 }

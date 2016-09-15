@@ -1,5 +1,6 @@
 package it.lic.keypair;
 
+import it.lic.error.LicenseToolException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -15,12 +16,12 @@ public interface LicenseKeyPair {
     /**
      * Returns the public key.
      */
-    PublicKey publicKey() ;
+    PublicKey publicKey() throws LicenseToolException;
 
     /**
      * Returns the private key.
      */
-    PrivateKey privateKey() ;
+    PrivateKey privateKey() throws LicenseToolException;
 
     /**
      * The name of this kp.
@@ -41,18 +42,50 @@ public interface LicenseKeyPair {
         }
 
         @Override
-        public PublicKey publicKey() {
+        public PublicKey publicKey() throws LicenseToolException {
             return this.keypair.getPublic();
         }
 
         @Override
-        public PrivateKey privateKey() {
+        public PrivateKey privateKey() throws LicenseToolException {
             return this.keypair.getPrivate();
         }
 
         @Override
         public String name() {
             return this.name;
+        }
+    }
+
+    final class Comparable implements LicenseKeyPair {
+        final LicenseKeyPair origin;
+
+        public Comparable(LicenseKeyPair origin) {
+            this.origin = origin;
+        }
+
+        @Override
+        public PublicKey publicKey() throws LicenseToolException {
+            return this.origin.publicKey();
+        }
+
+        @Override
+        public PrivateKey privateKey() throws LicenseToolException {
+            return this.origin.privateKey();
+        }
+
+        @Override
+        public String name() {
+            return this.origin.name();
+        }
+
+        public boolean equals(final LicenseKeyPair other) {
+            boolean result = false;
+            try {
+                result = this.origin.privateKey().equals(other.privateKey())
+                    && this.origin.publicKey().equals(other.publicKey());
+            } catch (LicenseToolException e) {}
+            return result;
         }
     }
 }
