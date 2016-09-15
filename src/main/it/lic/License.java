@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import it.lic.error.LicenseToolException;
 import it.lic.keypair.LicenseKeyPair;
 import java.security.PublicKey;
 import java.util.Date;
@@ -63,7 +64,7 @@ public interface License {
         }
 
         @Override
-        public String encode() throws Exception {
+        public String encode() throws LicenseToolException {
             final JwtBuilder builder = Jwts.builder()
                 .setIssuer(this.issuer)
                 .setHeaderParam("until", this.until);
@@ -72,7 +73,8 @@ public interface License {
             }
             builder.setHeaderParam("name", this.name);
             builder.signWith(SignatureAlgorithm.RS512, this.keypair.privateKey());
-            return builder.compact();        }
+            return builder.compact();
+        }
 
         @Override
         public String name() {

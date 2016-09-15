@@ -8,7 +8,7 @@ public class LicenseTest extends spock.lang.Specification {
     setup:
     def wallet = new Wallet.Default(new TempFileStorage())
     def keypair = wallet.newLicenseKeyPair("abc")
-    def license = new License.Default(
+    def license = wallet.newLicense(
       "server1.example.org",
       keypair,
       "Umberto Nicoletti",
@@ -25,14 +25,13 @@ public class LicenseTest extends spock.lang.Specification {
     def storage = new TempFileStorage()
     def wallet = new Wallet.Default(storage)
     def keypair = wallet.newLicenseKeyPair("abc")
-    def license = new License.Default(
+    def license = wallet.newLicense(
       "server1.example.org",
       keypair,
       "Umberto Nicoletti",
       new Date(),
       Collections.emptyMap()
     )
-    storage.write(new StorableLicense(license).path(), license.encode().bytes)
 
     expect:
     storage.read(new StorableLicense(license).path()) == license.encode().bytes
@@ -53,14 +52,13 @@ public class LicenseTest extends spock.lang.Specification {
     def storage = new TempFileStorage()
     def wallet = new Wallet.Default(storage)
     def keypair = wallet.newLicenseKeyPair("abc")
-    def license = new License.Default(
+    def license = wallet.newLicense(
       "server1.example.org",
       keypair,
       "Umberto Nicoletti",
       new Date(),
       Collections.emptyMap()
     )
-    storage.write(new StorableLicense(license).path(), license.encode().bytes)
 
     expect:
     wallet.licenses(keypair, "").hasNext()
@@ -73,14 +71,13 @@ public class LicenseTest extends spock.lang.Specification {
     def storage = new TempFileStorage()
     def wallet = new Wallet.Default(storage)
     def keypair = wallet.newLicenseKeyPair("abc")
-    def license = new License.Default(
+    def license = wallet.newLicense(
       "server1.example.org",
       keypair,
       "Umberto Nicoletti",
       new Date(),
       Collections.emptyMap()
     )
-    storage.write(new StorableLicense(license).path(), license.encode().bytes)
 
     expect:
     wallet.licenses(keypair, "Server1").hasNext()
@@ -96,24 +93,22 @@ public class LicenseTest extends spock.lang.Specification {
     def storage = new TempFileStorage()
     def wallet = new Wallet.Default(storage)
     def keypair = wallet.newLicenseKeyPair("abc")
-    def license = new License.Default(
+    def license = wallet.newLicense(
       "server1.example.org",
       keypair,
       "Umberto Nicoletti",
       new Date(),
       Collections.emptyMap()
     )
-    storage.write(new StorableLicense(license).path(), license.encode().bytes)
 
     def keypair2 = wallet.newLicenseKeyPair("def")
-    def license2 = new License.Default(
+    def license2 = wallet.newLicense(
       "server1.example.org",
       keypair2,
       "Umberto Nicoletti",
       new Date(),
       Collections.emptyMap()
     )
-    storage.write(new StorableLicense(license2).path(), license2.encode().bytes)
     Iterator licenses = wallet.licenses(keypair, "Server1")
 
     expect:

@@ -1,5 +1,6 @@
 package it.lic;
 
+import it.lic.error.LicenseToolException;
 import it.lic.key.Key;
 import it.lic.keypair.LicenseKeyPair;
 import it.lic.keypair.ReadableLicenseKeyPair;
@@ -8,7 +9,9 @@ import it.lic.storage.Storage;
 import java.security.KeyPairGenerator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * TODO: Add Javadoc.
@@ -22,6 +25,13 @@ public interface Wallet {
     LicenseKeyPair newLicenseKeyPair(String name) throws Exception ;
 
     LicenseKeyPair licenseKeyPair(String name) throws Exception ;
+
+    License newLicense(
+        String name,
+        LicenseKeyPair keypair,
+        String issuer,
+        Date until,
+        Map<String,String> headers) throws LicenseToolException;
 
     final class Default implements Wallet {
         final Storage storage;
@@ -63,6 +73,23 @@ public interface Wallet {
         @Override
         public LicenseKeyPair licenseKeyPair(String name) throws Exception {
             return new ReadableLicenseKeyPair(name, this.storage);
+        }
+
+        @Override
+        public License newLicense(
+            final String name, final LicenseKeyPair keypair,
+            final String issuer, final Date until,
+            final Map<String, String> headers) throws LicenseToolException {
+            final License newlicense;
+            try {
+                newlicense = new License.Default(
+                    name, keypair, issuer, until, headers
+                );
+                this.storage.write(new StorableLicense(newlicense).path(), newlicense.encode().getBytes());
+            } catch (Exception e) {
+                throw new LicenseToolException("Can't generate new License", e);
+            }
+            return newlicense;
         }
     }
 }
