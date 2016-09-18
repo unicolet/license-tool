@@ -28,4 +28,19 @@ public class LicenseKeyPairTest extends spock.lang.Specification {
     expect:
     new LicenseKeyPair.Comparable(wallet.licenseKeyPair(name)).equals(license)
   }
+
+  def "comparable works as expected"() {
+    setup:
+    def name = "abc"
+    def wallet = new Wallet.Default(new TempFileStorage())
+    def lkp = wallet.newLicenseKeyPair(name)
+    def comparablelkp = new LicenseKeyPair.Comparable(wallet.licenseKeyPair(name))
+
+    expect:
+    comparablelkp.equals(lkp)
+    comparablelkp.name().equals(lkp.name())
+    comparablelkp.privateKey().equals(lkp.privateKey())
+    comparablelkp.publicKey().equals(lkp.publicKey())
+  }
+
 }

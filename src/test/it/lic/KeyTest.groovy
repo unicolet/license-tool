@@ -15,5 +15,6 @@ public class KeyTest extends spock.lang.Specification {
     root.path() == ""
     root.fullpath() == ""
     root.parentKey() == root
+    !root.nested()
   }
 }
