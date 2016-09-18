@@ -1,5 +1,6 @@
 package it.lic.storage;
 
+import it.lic.error.LicenseToolException;
 import it.lic.key.Key;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface Storage {
      * @param key
      * @return data. Exception if not found.
      */
-    byte[] read(Key key) throws Exception;
+    byte[] read(Key key) throws LicenseToolException;
 
     /**
      * Check if a key exists.
@@ -29,7 +30,7 @@ public interface Storage {
      * @param key
      * @param data
      */
-    void write(Key key, byte[] data) throws Exception;
+    void write(Key key, byte[] data) throws LicenseToolException;
 
     /**
      * Returns all keys.

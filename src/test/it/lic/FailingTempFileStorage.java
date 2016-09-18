@@ -10,19 +10,20 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 
 /**
- * TODO: Add Javadoc.
+ * A file storage implementation that will fail to work because of
+ * missing permissions.
  * @author Umberto Nicoletti (umberto.nicoletti@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class TempFileStorage implements Storage {
+public final class FailingTempFileStorage implements Storage {
     final Storage storage;
 
-    public TempFileStorage() throws Exception {
+    public FailingTempFileStorage() throws Exception {
         final File tmp = Files.createTempDirectory(
             "test",
             PosixFilePermissions.asFileAttribute(
-                PosixFilePermissions.fromString("rwxrwx---")
+                PosixFilePermissions.fromString("r-xr-x---")
             )
         ).toFile();
         tmp.deleteOnExit();

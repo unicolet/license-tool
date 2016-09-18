@@ -11,4 +11,8 @@ public class LicenseToolException extends Exception {
     public LicenseToolException(String msg, Exception cause) {
         super(msg, cause);
     }
+
+    public LicenseToolException(String msg) {
+        super(msg);
+    }
 }

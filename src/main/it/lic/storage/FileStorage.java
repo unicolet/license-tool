@@ -1,11 +1,13 @@
 package it.lic.storage;
 
+import it.lic.error.LicenseToolException;
 import it.lic.key.Key;
 import it.lic.key.NestedKey;
 import it.lic.key.Separator;
 import it.lic.key.StorageKey;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -20,7 +22,7 @@ import org.apache.commons.io.FileUtils;
 public class FileStorage implements Storage {
     File root;
 
-    public FileStorage() throws Exception {
+    public FileStorage() throws LicenseToolException {
         this(
             new File(
                 String.format(
@@ -33,15 +35,15 @@ public class FileStorage implements Storage {
         );
     }
 
-    public FileStorage(Key key) throws Exception {
+    public FileStorage(Key key) throws LicenseToolException {
         this(new File(key.fullpath()));
     }
 
-    public FileStorage(File path) throws Exception {
+    public FileStorage(File path) throws LicenseToolException {
         this.root = path;
         if(!this.root.exists()) {
             if(!this.root.mkdirs()) {
-                throw new Exception(
+                throw new LicenseToolException(
                     String.format(
                         "Can't operate (mkdirs) on %s",
                         this.root.getPath()
@@ -52,9 +54,16 @@ public class FileStorage implements Storage {
     }
 
     @Override
-    public final byte[] read(final Key key) throws Exception {
+    public final byte[] read(final Key key) throws LicenseToolException {
         final File source = new File(this.root, key.fullpath());
-        return FileUtils.readFileToByteArray(source);
+        try {
+            return FileUtils.readFileToByteArray(source);
+        } catch (final IOException e) {
+            throw new LicenseToolException(
+                String.format("Can't read key %s", key.fullpath()),
+                e
+            );
+        }
     }
 
     @Override
@@ -63,12 +72,12 @@ public class FileStorage implements Storage {
     }
 
     @Override
-    public final void write(final Key key, final byte[] data) throws Exception {
+    public final void write(final Key key, final byte[] data) throws LicenseToolException {
         final File destination = new File(this.root, key.fullpath());
         if(
             !destination.getParentFile().exists()
             && !destination.getParentFile().mkdirs()) {
-            throw new Exception(
+            throw new LicenseToolException(
                 String.format(
                     "Cannot create fullpath to store: %s",
                     destination.getAbsolutePath()
@@ -81,6 +90,11 @@ public class FileStorage implements Storage {
             )
         ) {
             fos.write(data);
+        } catch (final Exception fne) {
+            throw new LicenseToolException(
+                String.format("Can't write key %s", key.fullpath()),
+                fne
+            );
         }
     }
 
