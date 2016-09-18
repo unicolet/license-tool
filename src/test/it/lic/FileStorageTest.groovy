@@ -9,6 +9,19 @@ import it.lic.storage.FileStorage
  * Test suite for FileStorage functionality.
  */
 public class FileStorageTest extends spock.lang.Specification {
+  def "can work with default settings"() {
+    setup:
+    def system = new FakeSystem()
+    def storage = new FileStorage(system)
+
+    expect:
+    storage.exists(new StorageKey(key)) == exists
+
+    where:
+    key          | exists
+    "idontexist" | false
+  }
+
   def "can work from a tmp directory"() {
     setup:
     def tmp = File.createTempDir()

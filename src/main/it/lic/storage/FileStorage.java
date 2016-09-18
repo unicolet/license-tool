@@ -20,27 +20,34 @@ import org.apache.commons.io.FileUtils;
  * @since 0.1
  */
 public class FileStorage implements Storage {
-    File root;
+    final File root;
+    final System system;
 
-    public FileStorage() throws LicenseToolException {
+    public FileStorage(final System sys) throws LicenseToolException {
         this(
             new File(
                 String.format(
                     "%s%s%s",
-                    System.getProperty("user.home"),
-                    System.getProperty("file.separator"),
+                    sys.home(),
+                    sys.fileSeparator(),
                     ".lictool"
                 )
-            )
+            ),
+            sys
         );
     }
 
     public FileStorage(Key key) throws LicenseToolException {
-        this(new File(key.fullpath()));
+        this(new File(key.fullpath()), new System.Default());
     }
 
     public FileStorage(File path) throws LicenseToolException {
+        this(path, new System.Default());
+    }
+
+    public FileStorage(File path, System sys) throws LicenseToolException {
         this.root = path;
+        this.system = sys;
         if(!this.root.exists()) {
             if(!this.root.mkdirs()) {
                 throw new LicenseToolException(

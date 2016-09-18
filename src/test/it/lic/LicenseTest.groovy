@@ -140,4 +140,25 @@ public class LicenseTest extends spock.lang.Specification {
 
     !wallet.licenses(keypair, "server2").hasNext()
   }
+
+  def "storablelicense works as expected"() {
+    def storage = new TempFileStorage()
+    def wallet = new Wallet.Default(storage)
+    def keypair = wallet.newLicenseKeyPair("abc")
+    def license = wallet.newLicense(
+      "server1.example.org",
+      keypair,
+      "Umberto Nicoletti",
+      new Date(),
+      Collections.emptyMap()
+    )
+    def storable = new StorableLicense(license)
+
+    expect:
+    storable.name() == license.name()
+    storable.issuer() == license.issuer()
+    storable.until() == license.until()
+    storable.signer() == license.signer()
+    storable.encode() == license.encode()
+  }
 }
