@@ -49,11 +49,6 @@ public final class ReadableLicenseKeyPair implements LicenseKeyPair {
         return this.name;
     }
 
-    public boolean exists() throws Exception {
-        return this.storage.exists(new PubKey(this.name))
-            && this.storage.exists(new PkKey(this.name));
-    }
-
     private PublicKey readPublicKey() throws Exception {
         final KeyFactory keyfactory = KeyFactory.getInstance("RSA");
         final KeySpec keyspec = new X509EncodedKeySpec(
