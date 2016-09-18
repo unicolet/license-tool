@@ -4,6 +4,7 @@ import it.lic.key.Key;
 import it.lic.key.NestedKey;
 import it.lic.key.StorageKey;
 import it.lic.keypair.LicenseKeyPair;
+import java.util.Date;
 
 /**
  * A license that can be stored to a storage.
@@ -27,6 +28,16 @@ public class StorableLicense implements License {
     @Override
     public String name() {
         return this.origin.name();
+    }
+
+    @Override
+    public String issuer() {
+        return this.origin.issuer();
+    }
+
+    @Override
+    public Date until() {
+        return this.origin.until();
     }
 
     @Override

@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.DefaultClaims;
 import it.lic.error.LicenseToolException;
 import it.lic.keypair.LicenseKeyPair;
 import java.security.PublicKey;
@@ -33,6 +34,12 @@ public interface License {
     /**
      *
      */
+    String issuer();
+
+    /**
+     *
+     */
+    Date until();
 
     /**
      * The keypair that signed this license.
@@ -67,7 +74,7 @@ public interface License {
         public String encode() throws LicenseToolException {
             final JwtBuilder builder = Jwts.builder()
                 .setIssuer(this.issuer)
-                .setHeaderParam("until", this.until);
+                .setHeaderParam("until", this.until.getTime());
             for(final Map.Entry<String, String> header : this.headers.entrySet()) {
                 builder.setHeaderParam(header.getKey(), header.getValue());
             }
@@ -79,6 +86,16 @@ public interface License {
         @Override
         public String name() {
             return this.name;
+        }
+
+        @Override
+        public String issuer() {
+            return this.issuer;
+        }
+
+        @Override
+        public Date until() {
+            return this.until;
         }
 
         @Override
@@ -109,6 +126,26 @@ public interface License {
                 .setSigningKey(this.pubkey)
                 .parse(new String(this.bytes));
             return (String) token.getHeader().get("name");
+        }
+
+        @Override
+        public String issuer() {
+            final Jwt token = Jwts.parser()
+                .setSigningKey(this.pubkey)
+                .parse(new String(this.bytes));
+                DefaultClaims claims = (DefaultClaims) token.getBody();
+                return claims.getIssuer();
+        }
+
+        @Override
+        public Date until() {
+            final Jwt token = Jwts.parser()
+                .setSigningKey(this.pubkey)
+                .parse(new String(this.bytes));
+                DefaultClaims claims = (DefaultClaims) token.getBody();
+            Date result = new Date();
+            result.setTime(Long.parseLong(token.getHeader().get("until").toString()));
+            return result;
         }
 
         @Override

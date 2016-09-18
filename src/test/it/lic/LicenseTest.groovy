@@ -37,6 +37,27 @@ public class LicenseTest extends spock.lang.Specification {
     storage.read(new StorableLicense(license).path()) == license.encode().bytes
   }
 
+  def "can store and read back a license fully"() {
+    setup:
+    def storage = new TempFileStorage()
+    def wallet = new Wallet.Default(storage)
+    def keypair = wallet.newLicenseKeyPair("abc")
+    def license = wallet.newLicense(
+      "server1.example.org",
+      keypair,
+      "Umberto Nicoletti",
+      new Date(),
+      Collections.emptyMap()
+    )
+    def readback = wallet.licenses(keypair, "server1.example.org").next()
+
+    expect:
+    readback.encode() == license.encode()
+    readback.name() == license.name()
+    readback.issuer() == license.issuer()
+    readback.until() == license.until()
+  }
+
   def "can list all licenses belonging to a new keypair"() {
     setup:
     def storage = new TempFileStorage()
