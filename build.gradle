@@ -3,8 +3,11 @@ plugins {
     id "groovy"
     id "jacoco"
     id "com.github.kt3k.coveralls" version "2.6.3"
-
+    id 'com.github.johnrengelman.shadow' version '1.2.4'
+    id "application"
 }
+
+mainClassName = 'it.lic.cli.Main'
 
 repositories {
     jcenter()

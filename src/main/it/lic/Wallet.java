@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * TODO: Add Javadoc.
@@ -32,6 +33,8 @@ public interface Wallet {
         String issuer,
         Date until,
         Map<String,String> headers) throws LicenseToolException;
+
+    Optional<License> hasLicenseFor(final LicenseKeyPair lkp, final String name) throws Exception;
 
     final class Default implements Wallet {
         final Storage storage;
@@ -90,6 +93,26 @@ public interface Wallet {
                 throw new LicenseToolException("Can't generate new License", e);
             }
             return newlicense;
+        }
+
+        @Override
+        public Optional<License> hasLicenseFor(final LicenseKeyPair lkp, final String name) throws Exception {
+            Optional<License> found = Optional.empty();
+            for( final Key key : this.storage.keys() ) {
+                if(key.nested()) {
+                    if( key.parentKey().path().equals(lkp.name())
+                        && key.path().equals(name)
+                        ) {
+                        found = Optional.of(new License.FromByte(
+                                this.storage.read(key),
+                                lkp
+                            )
+                        );
+                        break;
+                    }
+                }
+            }
+            return found;
         }
     }
 }

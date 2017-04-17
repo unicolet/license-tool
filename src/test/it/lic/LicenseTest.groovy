@@ -141,6 +141,36 @@ public class LicenseTest extends spock.lang.Specification {
     !wallet.licenses(keypair, "server2").hasNext()
   }
 
+  def "can check if license exists"() {
+    setup:
+    def storage = new TempFileStorage()
+    def wallet = new Wallet.Default(storage)
+    def keypair = wallet.newLicenseKeyPair("abc")
+    def license = wallet.newLicense(
+      "server1.example.org",
+      keypair,
+      "Umberto Nicoletti",
+      new Date(),
+      Collections.emptyMap()
+    )
+
+    def keypair2 = wallet.newLicenseKeyPair("def")
+    def license2 = wallet.newLicense(
+      "server1.example.org",
+      keypair2,
+      "Umberto Nicoletti",
+      new Date(),
+      Collections.emptyMap()
+    )
+
+    expect:
+    wallet.hasLicenseFor(keypair, "server1.example.org").present
+    !wallet.hasLicenseFor(keypair, "server.example.org").present
+    wallet.hasLicenseFor(keypair2, "server1.example.org").present
+    !wallet.hasLicenseFor(keypair, "server.example.org").present
+  }
+
+
   def "storablelicense works as expected"() {
     def storage = new TempFileStorage()
     def wallet = new Wallet.Default(storage)
